@@ -20,7 +20,7 @@ void * tarefa(void *arg) {
    for (int i = args->id; i < args->dim; i += nthreads){
       for (int j = 0; j < args->dim; j += 1){
          for (int k = 0; k < args->dim; k += 1){
-            mat_saida[i*args->dim + j] += mat[i*args->dim + k] * mat2[j*args->dim + k];
+            mat_saida[i*args->dim + j] += mat[i*args->dim + k] * mat2[k*args->dim + j];
 
          }
       }
