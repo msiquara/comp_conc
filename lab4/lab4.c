@@ -96,10 +96,10 @@ int main(int argc, char *argv[]){
 	pthread_mutex_init(&x_mutex, NULL);
   	pthread_cond_init (&x_cond, NULL);
 
-	pthread_create(&threads[3], NULL, T1, NULL);
+	pthread_create(&threads[3], NULL, T4, NULL);
 	pthread_create(&threads[2], NULL, T3, NULL);
   	pthread_create(&threads[1], NULL, T2, NULL);
-  	pthread_create(&threads[0], NULL, T4, NULL);
+  	pthread_create(&threads[0], NULL, T1, NULL);
 
 	for (i = 0; i < NTHREADS; i++) {
 	    pthread_join(threads[i], NULL);
