@@ -8,15 +8,16 @@ int x, y = 0; //x gerencia a ordem das threads, y identifica a necessidade de de
 
 pthread_mutex_t x_mutex;
 pthread_cond_t x_cond;
+pthread_cond_t y_cond; //T1 apenas
 
 void *T1(void *t){	
 	pthread_mutex_lock(&x_mutex);
 	//printf("iniciou thread 1\n");
 
-	while (x < 3){
+	while (x < 3){ //while é usado pois x é alterado durante a execução
 		//printf("thread 1 bloqueada\n");		
 		y++;
-		pthread_cond_wait(&x_cond, &x_mutex);
+		pthread_cond_wait(&y_cond, &x_mutex);
 		pthread_mutex_unlock(&x_mutex);
 		//printf("thread 1 desbloqueada\n");
 	}
@@ -38,8 +39,9 @@ void *T2(void *t){
 
 	x++;
 
-	if ((y > 0) && (x == 3)){ //dentro da seçao critica pois estamos trabalhando com variaveis globais
-		pthread_cond_signal(&x_cond);
+	if ((y > 0) && (x == 3)){  //dentro da seçao critica pois estamos trabalhando com variaveis globais
+		pthread_cond_signal(&y_cond);
+		//printf("sinal enviado\n");
 	}
 
 	printf("Fique a vontade.\n");
@@ -62,7 +64,8 @@ void *T3(void *t){
 	x++;
 	
 	if ((y > 0) && (x == 3)){ //dentro da seçao critica pois estamos trabalhando com variaveis globais
-		pthread_cond_signal(&x_cond);
+		pthread_cond_signal(&y_cond);
+		//printf("sinal enviado\n");
 	}
 
 	printf("Sente-se por favor.\n");
@@ -93,10 +96,10 @@ int main(int argc, char *argv[]){
 	pthread_mutex_init(&x_mutex, NULL);
   	pthread_cond_init (&x_cond, NULL);
 
-	pthread_create(&threads[3], NULL, T4, NULL);
+	pthread_create(&threads[3], NULL, T1, NULL);
 	pthread_create(&threads[2], NULL, T3, NULL);
   	pthread_create(&threads[1], NULL, T2, NULL);
-  	pthread_create(&threads[0], NULL, T1, NULL);
+  	pthread_create(&threads[0], NULL, T4, NULL);
 
 	for (i = 0; i < NTHREADS; i++) {
 	    pthread_join(threads[i], NULL);
